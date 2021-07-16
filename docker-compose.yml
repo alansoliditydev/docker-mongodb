@@ -8,15 +8,15 @@ version: '3.6'
 
 
 services:
-  my-mongodb:
+  local-mongodb:
     image: mongo:4.2.3-bionic
-    container_name: my-mongodb
+    container_name: local-mongodb
     ports:
-      - 27017:27017
+      - 127.0.0.1:27017:27017
     environment:
-      - MONGO_INITDB_DATABASE=test
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_INITDB_DATABASE=localdb
+      - MONGO_INITDB_ROOT_USERNAME=alandev
+      - MONGO_INITDB_ROOT_PASSWORD=alandev
     volumes:
       # seeding scripts
       - ./mongo-entrypoint:/docker-entrypoint-initdb.d
@@ -26,20 +26,20 @@ services:
     networks:
       - mongo_net
 
-  my-mongoclient:
+  local-mongoclient:
     # build will get tagged with 'image'
     build: ./my-mongoclient
     image: fabianlee/my-mongoclient:3.9
-    container_name: my-mongoclient
+    container_name: local-mongoclient
     environment:
-      - MONGO_SERVER=my-mongodb
-      - MONGO_INITDB_DATABASE=test
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=admin
+      - MONGO_SERVER=local-mongodb
+      - MONGO_INITDB_DATABASE=localdb
+      - MONGO_INITDB_ROOT_USERNAME=alandev
+      - MONGO_INITDB_ROOT_PASSWORD=alandev
     networks:
       - mongo_net
     depends_on:
-      - my-mongodb
+      - local-mongodb
     
 volumes:
   # default dir on Ubuntu: /var/lib/docker/volumes
